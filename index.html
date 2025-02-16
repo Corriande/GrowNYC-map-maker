@@ -147,15 +147,24 @@
                 point_color: plotZipcodes ? document.getElementById("zip-point-color").value : null,
                 line_widths: [
                     parseFloat(document.getElementById("manhattan-line-width").value),
-                    parseFloat(document.getElementById("brooklyn-line-width").value)
+                    parseFloat(document.getElementById("brooklyn-line-width").value),
+                    parseFloat(document.getElementById("queens-line-width").value),
+                    parseFloat(document.getElementById("bronx-line-width").value),
+                    parseFloat(document.getElementById("staten_island-line-width").value)
                 ],
                 color_vector: [
                     document.getElementById("manhattan-color").value,
-                    document.getElementById("brooklyn-color").value
+                    document.getElementById("brooklyn-color").value,
+                    document.getElementById("queens-color").value,
+                    document.getElementById("bronx-color").value,
+                    document.getElementById("staten_island-color").value
                 ],
                 con_edge_vector: [
                     document.getElementById("manhattan-edge-color").value,
-                    document.getElementById("brooklyn-edge-color").value
+                    document.getElementById("brooklyn-edge-color").value,
+                    document.getElementById("queens-edge-color").value,
+                    document.getElementById("bronx-edge-color").value,
+                    document.getElementById("staten_island-edge-color").value
                 ]
             };
 
