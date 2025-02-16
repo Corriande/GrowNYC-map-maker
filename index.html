@@ -4,48 +4,247 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Map Generator</title>
+    <style>
+        .borough-settings, .zip-settings {
+            display: none;
+            margin-left: 20px;
+        }
+    </style>
 </head>
 <body>
     <h1>GrowNYC Map Generator</h1>
-    <button id="generate-map">Generate Manhattan Map</button>
+
+    <!-- ZIP Code Upload Section -->
+    <h3>Upload ZIP Code File</h3>
+    <input type="file" id="zip-file" accept=".csv,.xls,.xlsx">
+    <button id="upload-zipcodes">Upload ZIP Codes</button>
+    <p id="upload-status"></p>
+
+    <hr>
+
+    <!-- Image Size Selection -->
+    <h3>Image Size</h3>
+    <label>
+        Select image size (Max: 200):
+        <input type="number" id="image-size" value="50" min="10" max="200">
+    </label>
+    
+    <hr>
+
+    <!-- Borough Selection -->
+    <h3>Select Boroughs</h3>
+    <div>
+        <label><input type="checkbox" id="manhattan"> Manhattan</label>
+        <div id="manhattan-settings" class="borough-settings">
+            <label>Street Line Width: <input type="number" id="manhattan-line-width" value="1"></label><br><br>
+            <label>Street Color: <input type="color" id="manhattan-color" value="#292019"></label><br><br>
+            <label>Outline Color: <input type="color" id="manhattan-edge-color" value="#17a628"></label><br><br>
+            <label>Land Color: <input type="color" id="manhattan-contour-color" value="#fdf6e7"></label><br><br>
+            <label>Outline Line Width: <input type="number" id="manhattan-contour-width" value="2.5"></label><br><br>
+        </div>
+    </div>
+
+    <div>
+        <label><input type="checkbox" id="brooklyn"> Brooklyn</label>
+        <div id="brooklyn-settings" class="borough-settings">
+            <label>Street Line Width: <input type="number" id="brooklyn-line-width" value="1"></label><br><br>
+            <label>Street Color: <input type="color" id="brooklyn-color" value="#292019"></label><br><br>
+            <label>Outline Color: <input type="color" id="brooklyn-edge-color" value="#17a628"></label><br><br>
+            <label>Land Color: <input type="color" id="brooklyn-contour-color" value="#fdf6e7"></label><br><br>
+            <label>Outline Line Width: <input type="number" id="brooklyn-contour-width" value="2.5"></label><br><br>
+        </div>
+    </div>
+
+    <div>
+        <label><input type="checkbox" id="staten_island"> Staten Island</label>
+        <div id="staten_island-settings" class="borough-settings">
+            <label>Street Line Width: <input type="number" id="staten_island-line-width" value="1"></label><br><br>
+            <label>Street Color: <input type="color" id="staten_island-color" value="#292019"></label><br><br>
+            <label>Outline Color: <input type="color" id="staten_island-edge-color" value="#17a628"></label><br><br>
+            <label>Land Color: <input type="color" id="staten_island-contour-color" value="#fdf6e7"></label><br><br>
+            <label>Outline Line Width: <input type="number" id="staten_island-contour-width" value="2.5"></label><br><br>
+        </div>
+    </div>
+
+    <div>
+        <label><input type="checkbox" id="bronx"> Bronx</label>
+        <div id="bronx-settings" class="borough-settings">
+            <label>Street Line Width: <input type="number" id="bronx-line-width" value="1"></label><br><br>
+            <label>Street Color: <input type="color" id="bronx-color" value="#292019"></label><br><br>
+            <label>Outline Color: <input type="color" id="bronx-edge-color" value="#17a628"></label><br><br>
+            <label>Land Color: <input type="color" id="bronx-contour-color" value="#fdf6e7"></label><br><br>
+            <label>Outline Line Width: <input type="number" id="bronx-contour-width" value="2.5"></label><br><br>
+        </div>
+    </div>
+
+    <div>
+        <label><input type="checkbox" id="queens"> Queens</label>
+        <div id="queens-settings" class="borough-settings">
+            <label>Street Line Width: <input type="number" id="queens-line-width" value="1"></label><br><br>
+            <label>Street Color: <input type="color" id="queens-color" value="#292019"></label><br><br>
+            <label>Outline Color: <input type="color" id="queens-edge-color" value="#17a628"></label><br><br>
+            <label>Land Color: <input type="color" id="queens-contour-color" value="#fdf6e7"></label><br><br>
+            <label>Outline Line Width: <input type="number" id="queens-contour-width" value="2.5"></label><br><br>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Plot Zipcodes -->
+    <h3>Plot Zipcodes</h3>
+    <label><input type="checkbox" id="plot-zipcodes"> Enable Zipcode Points</label>
+    <div id="plot-zipcodes-settings" class="zip-settings">
+        <label>Zipcode Point Size: <input type="number" id="zip-point-size" value="50" min="1" max="200"></label><br><br>
+        <label>Zipcode Point Color: <input type="color" id="zip-point-color" value="#003913"></label><br><br>
+        <label>Zipcode Outline Width: <input type="number" id="zip-point-outline-width" value="3" min="1" max="10"></label><br><br>
+        <label>Zipcode Outline Color: <input type="color" id="zip-point-outline-color" value="#17a628"></label><br><br>
+
+        <h4>Select Boroughs for Zipcode Points</h4><br>
+        <label><input type="checkbox" class="borough-point" value="Manhattan"> Manhattan</label><br>
+        <label><input type="checkbox" class="borough-point" value="Brooklyn"> Brooklyn</label><br>
+        <label><input type="checkbox" class="borough-point" value="staten_island"> Staten Island</label><br>
+        <label><input type="checkbox" class="borough-point" value="Bronx"> Bronx</label><br>
+        <label><input type="checkbox" class="borough-point" value="Queens"> Queens</label><br>
+    </div>
+
+    <hr>
+
+    <!-- JSON Input for Custom Requests -->
+    <h3>Generated JSON Request</h3>
+    <textarea id="json-input" rows="6" cols="50" readonly></textarea>
+    <br>
+    <button id="generate-map">Generate Map</button>
     <br><br>
+
+    <!-- Display the Generated Map -->
     <img id="map-output" src="" alt="Map will appear here" style="max-width:100%; display:none; border: 2px solid black;">
 
     <script>
-            document.getElementById("generate-map").addEventListener("click", () => {
-        fetch("https://map-generator-1061233124893.us-east4.run.app/generate-map", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                "manhattan": true,
-                "brooklyn": false,
-                "staten_island": false,
-                "bronx": false,
-                "queens": false
-            })
-        })
-        .then(response => {
-            console.log("Response Status:", response.status); // Log status
-            return response.blob();
-        })
-        .then(blob => {
-            if (blob.type !== "image/png") {
-                throw new Error("Response is not an image.");
-            }
-            const imageUrl = URL.createObjectURL(blob);
-            const img = document.getElementById("map-output");
-            img.src = imageUrl;
-            img.style.display = "block"; // Show image
-        })
-        .catch(error => {
-            console.error("Error fetching map:", error);
-            alert("Failed to generate the map. Check console logs.");
-        });
-    });
+        const API_BASE = "https://map-generator-1061233124893.us-east4.run.app";
 
+        function updateJsonInput() {
+            const imageSize = Math.min(Math.max(parseInt(document.getElementById("image-size").value), 10), 200);
+            const plotZipcodes = document.getElementById("plot-zipcodes").checked;
+
+            // Gather selected boroughs for plotting zipcodes
+            const boroughPoints = [];
+            document.querySelectorAll(".borough-point:checked").forEach((checkbox) => {
+                boroughPoints.push(checkbox.value);
+            });
+
+            const jsonData = {
+                size: imageSize,
+                manhattan: document.getElementById("manhattan").checked,
+                brooklyn: document.getElementById("brooklyn").checked,
+                points: plotZipcodes,  // ✅ Added key for plotting zipcodes
+                borough_points: plotZipcodes ? boroughPoints : [], // ✅ Store selected boroughs
+                point_size: plotZipcodes ? parseFloat(document.getElementById("zip-point-size").value) : null,
+                point_outline_color: plotZipcodes ? document.getElementById("zip-point-outline-color").value : null,
+                point_outline_width: plotZipcodes ? parseFloat(document.getElementById("zip-point-outline-width").value) : null,
+                point_color: plotZipcodes ? document.getElementById("zip-point-color").value : null,
+                line_widths: [
+                    parseFloat(document.getElementById("manhattan-line-width").value),
+                    parseFloat(document.getElementById("brooklyn-line-width").value)
+                ],
+                color_vector: [
+                    document.getElementById("manhattan-color").value,
+                    document.getElementById("brooklyn-color").value
+                ],
+                con_edge_vector: [
+                    document.getElementById("manhattan-edge-color").value,
+                    document.getElementById("brooklyn-edge-color").value
+                ]
+            };
+
+            document.getElementById("json-input").value = JSON.stringify(jsonData, null, 4);
+        }
+
+        document.querySelectorAll("input[type='checkbox']").forEach(checkbox => {
+            checkbox.addEventListener("change", function() {
+                const settingsDiv = document.getElementById(`${this.id}-settings`);
+                if (settingsDiv) settingsDiv.style.display = this.checked ? "block" : "none";
+                updateJsonInput();
+            });
+        });
+
+        // Special event for ZIP code plotting
+        document.getElementById("plot-zipcodes").addEventListener("change", function () {
+            const zipSettings = document.getElementById("plot-zipcodes-settings");
+            zipSettings.style.display = this.checked ? "block" : "none";
+            updateJsonInput();
+        });
+
+        document.getElementById("zip-point-outline-width").addEventListener("input", updateJsonInput);
+        document.getElementById("zip-point-outline-color").addEventListener("input", updateJsonInput);
+
+        // Listen for changes in borough checkboxes under ZIP plotting
+        document.querySelectorAll(".borough-point").forEach(checkbox => {
+            checkbox.addEventListener("change", updateJsonInput);
+        });
+
+        document.querySelectorAll("input[type='number'], input[type='color']").forEach(input => {
+            input.addEventListener("input", updateJsonInput);
+        });
+
+        document.getElementById("generate-map").addEventListener("click", async () => {
+            const jsonInput = document.getElementById("json-input").value;
+            const img = document.getElementById("map-output");
+
+            try {
+                const response = await fetch(`${API_BASE}/generate-map`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: jsonInput
+                });
+
+                const blob = await response.blob();
+                if (blob.type !== "image/png") throw new Error("Response is not an image.");
+
+                img.src = URL.createObjectURL(blob);
+                img.style.display = "block";
+            } catch (error) {
+                console.error("Error fetching map:", error);
+                alert("Failed to generate the map. Check console logs.");
+            }
+        });
+
+        document.getElementById("upload-zipcodes").addEventListener("click", async () => {
+            const fileInput = document.getElementById("zip-file");
+            const statusMessage = document.getElementById("upload-status");
+
+            if (fileInput.files.length === 0) {
+                statusMessage.innerText = "Please select a file before uploading.";
+                statusMessage.style.color = "red";
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const response = await fetch(`${API_BASE}/upload-zipcodes`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    statusMessage.innerText = "File uploaded successfully!";
+                    statusMessage.style.color = "green";
+                } else {
+                    statusMessage.innerText = `Upload failed: ${result.error}`;
+                    statusMessage.style.color = "red";
+                }
+            } catch (error) {
+                console.error("Error uploading file:", error);
+                statusMessage.innerText = "Upload failed. Check console logs.";
+                statusMessage.style.color = "red";
+            }
+        });
+
+
+        updateJsonInput();
     </script>
 </body>
 </html>
-
