@@ -136,6 +136,9 @@
                 size: imageSize,
                 manhattan: document.getElementById("manhattan").checked,
                 brooklyn: document.getElementById("brooklyn").checked,
+                staten_island: document.getElementById("staten_island").checked,
+                bronx: document.getElementById("bronx").checked,
+                queens: document.getElementById("queens").checked,
                 points: plotZipcodes,  // ✅ Added key for plotting zipcodes
                 borough_points: plotZipcodes ? boroughPoints : [], // ✅ Store selected boroughs
                 point_size: plotZipcodes ? parseFloat(document.getElementById("zip-point-size").value) : null,
