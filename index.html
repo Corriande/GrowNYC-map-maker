@@ -9,6 +9,42 @@
             display: none;
             margin-left: 20px;
         }
+        /* Spinner Container */
+        .spinner-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 9999;
+        }
+
+        /* The Spinner Animation */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid #17a628; /* Match theme color */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+
+        /* Keyframes for Spinner Rotation */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Disable button styling */
+        .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -116,11 +152,20 @@
     <button id="generate-map">Generate Map</button>
     <br><br>
 
+    <div id="loading-spinner" class="spinner-container" style="display: none;">
+        <div class="spinner"></div>
+        <p>Generating map, please wait...</p>
+    </div>
+
     <!-- Display the Generated Map -->
     <img id="map-output" src="" alt="Map will appear here" style="max-width:100%; display:none; border: 2px solid black;">
 
     <script>
         const API_BASE = "https://map-generator-1061233124893.us-east4.run.app";
+
+        const loadingSpinner = document.getElementById("loading-spinner");
+        const generateButton = document.getElementById("generate-map");
+
 
         function updateJsonInput() {
             const imageSize = Math.min(Math.max(parseInt(document.getElementById("image-size").value), 10), 200);
@@ -210,6 +255,11 @@
             const img = document.getElementById("map-output");
 
             try {
+                // Show loading spinner and disable button
+                loadingSpinner.style.display = "block";
+                generateButton.disabled = true;
+                generateButton.classList.add("disabled");
+
                 const response = await fetch(`${API_BASE}/generate-map`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -224,6 +274,11 @@
             } catch (error) {
                 console.error("Error fetching map:", error);
                 alert("Failed to generate the map. Check console logs.");
+            } finally {
+                // Hide loading spinner and re-enable button
+                loadingSpinner.style.display = "none";
+                generateButton.disabled = false;
+                generateButton.classList.remove("disabled");
             }
         });
 
